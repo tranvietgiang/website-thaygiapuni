@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+}
+
+button {
+  cursor: pointer;
+}
