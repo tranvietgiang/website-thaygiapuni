@@ -1,18 +1,18 @@
-import { BookOpen, Home, LockKeyhole } from 'lucide-react'
+import { BookOpen, Home, LockKeyhole } from "lucide-react";
 
 export default function LoginAdmin({ onLogin, goHome }) {
   function handleSubmit(event) {
-    event.preventDefault()
-    const formData = new FormData(event.currentTarget)
-    const password = formData.get('password')
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const password = formData.get("password");
 
-    if (password === 'admin123') {
-      onLogin()
-      return
+    if (password === "admin123") {
+      onLogin();
+      return;
     }
 
-    event.currentTarget.reset()
-    alert('Sai mật khẩu. Mật khẩu demo: admin123')
+    event.currentTarget.reset();
+    alert("Sai mật khẩu. Mật khẩu demo: admin123");
   }
 
   return (
@@ -28,7 +28,7 @@ export default function LoginAdmin({ onLogin, goHome }) {
               <p className="text-sm font-semibold uppercase tracking-wide text-emerald-100">
                 AboutUni Admin
               </p>
-              <h1 className="text-xl font-bold">YOLA Content Studio</h1>
+              <h1 className="text-xl font-bold">UNI Content Studio</h1>
             </div>
           </div>
 
@@ -40,12 +40,14 @@ export default function LoginAdmin({ onLogin, goHome }) {
               Chỉnh nội dung song ngữ trong một giao diện gọn và rõ.
             </h2>
             <p className="mt-5 max-w-lg text-base leading-7 text-emerald-50">
-              Giao diện admin dùng phong cách TDC: nền sáng, card trắng, nhấn xanh emerald,
-              bo góc 8px và bố cục thao tác nhanh.
+              Giao diện admin dùng phong cách TDC: nền sáng, card trắng, nhấn
+              xanh emerald, bo góc 8px và bố cục thao tác nhanh.
             </p>
           </div>
 
-          <p className="text-sm text-emerald-100">http://localhost:5175/admin</p>
+          <p className="text-sm text-emerald-100">
+            http://localhost:5175/admin
+          </p>
         </div>
       </section>
 
@@ -60,7 +62,9 @@ export default function LoginAdmin({ onLogin, goHome }) {
           <p className="mt-5 text-xs font-semibold uppercase tracking-wide text-emerald-700">
             Quản trị hệ thống
           </p>
-          <h1 className="mt-2 text-3xl font-bold text-slate-900">Đăng nhập admin</h1>
+          <h1 className="mt-2 text-3xl font-bold text-slate-900">
+            Đăng nhập admin
+          </h1>
           <p className="mt-2 text-sm leading-6 text-slate-500">
             Dùng mật khẩu demo để vào dashboard chỉnh nội dung website.
           </p>
@@ -92,5 +96,5 @@ export default function LoginAdmin({ onLogin, goHome }) {
         </form>
       </section>
     </main>
-  )
+  );
 }
