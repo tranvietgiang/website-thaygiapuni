@@ -1,9 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import {
-  defaultContent,
-  loadContent,
-  saveContent,
-} from "./data/siteContent.js";
+import { defaultContent } from "./data/siteContent.js";
+import { fetchSiteContent } from "./services/contentApi.js";
 import Footer from "./views/home/footer.jsx";
 import Header from "./views/home/header.jsx";
 import SectionOne from "./views/home/section-1.jsx";
@@ -30,18 +27,57 @@ function usePathRoute() {
   return [route, navigate];
 }
 
+function mergeLanguageContent(base, next) {
+  const merged = { ...base, ...(next || {}) };
+
+  if (next?.hero) {
+    merged.hero = { ...base.hero, ...next.hero };
+  }
+
+  if (next?.contact) {
+    merged.contact = { ...base.contact, ...next.contact };
+  }
+
+  return merged;
+}
+
+function mergeContentFromApi(nextContent) {
+  return {
+    vi: mergeLanguageContent(defaultContent.vi, nextContent?.vi),
+    en: mergeLanguageContent(defaultContent.en, nextContent?.en),
+  };
+}
+
 export default function App() {
   const [route, setRoute] = usePathRoute();
   const [lang, setLang] = useState("vi");
   const [activeLang, setActiveLang] = useState("vi");
   const [isAdmin, setIsAdmin] = useState(
-    () => sessionStorage.getItem("aboutUni.isAdmin") === "true",
+    () =>
+      sessionStorage.getItem("aboutUni.isAdmin") === "true" &&
+      Boolean(sessionStorage.getItem("aboutUni.jwt")),
   );
-  const [content, setContent] = useState(loadContent);
+  const [content, setContent] = useState(defaultContent);
 
   useEffect(() => {
-    saveContent(content);
-  }, [content]);
+    let ignore = false;
+
+    fetchSiteContent()
+      .then((nextContent) => {
+        if (!ignore) {
+          setContent(mergeContentFromApi(nextContent));
+        }
+      })
+      .catch(() => {
+        if (!ignore) {
+          setContent(defaultContent);
+        }
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   const currentContent = useMemo(
     () => content[lang] ?? content.vi,
@@ -52,6 +88,14 @@ export default function App() {
     sessionStorage.setItem("aboutUni.isAdmin", "true");
     setIsAdmin(true);
     setRoute("/admin/dashboard");
+  }
+
+  function handleLogout() {
+    sessionStorage.removeItem("aboutUni.isAdmin");
+    sessionStorage.removeItem("aboutUni.jwt");
+    sessionStorage.removeItem("aboutUni.csrf");
+    setIsAdmin(false);
+    setRoute("/admin");
   }
 
   if (route === "/admin" && !isAdmin) {
@@ -68,6 +112,7 @@ export default function App() {
         activeLang={activeLang}
         content={content}
         goHome={() => setRoute("/")}
+        onLogout={handleLogout}
         resetContent={() => setContent(defaultContent)}
         setActiveLang={setActiveLang}
         updateContent={setContent}

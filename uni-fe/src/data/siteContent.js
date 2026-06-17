@@ -236,7 +236,9 @@ export const defaultContent = {
       description:
         'Nhận bài test miễn phí và tư vấn lộ trình từ mất gốc đến mục tiêu điểm TOEIC phù hợp với ngành học hoặc công việc.',
       hotline: '028 6285 8080',
+      address: 'Lê Văn Việt, quận 9 | Đặng Văn Bi, Thủ Đức | Làng Đại học',
       button: 'Nhận tư vấn',
+      mapUrl: '',
     },
     footer: 'TOEIC Academy - Luyện thi TOEIC cho sinh viên và người đi làm từ mất gốc.',
   },
@@ -374,7 +376,9 @@ export const defaultContent = {
       description:
         'Get a free test and a pathway recommendation from zero foundation to your TOEIC score goal.',
       hotline: '028 6285 8080',
+      address: 'Le Van Viet, District 9 | Dang Van Bi, Thu Duc | University Village',
       button: 'Get consultation',
+      mapUrl: '',
     },
     footer: 'TOEIC Academy - TOEIC training for university students and working adults from zero foundation.',
   },
