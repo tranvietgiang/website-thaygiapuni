@@ -12,6 +12,7 @@ export default function SectionThree({ content }) {
   const [activeGalleryPage, setActiveGalleryPage] = useState(0);
   const [activeLightboxImage, setActiveLightboxImage] = useState(null);
   const [activeTestimonialPage, setActiveTestimonialPage] = useState(0);
+  const [hoveredTestimonial, setHoveredTestimonial] = useState(0);
   const galleries = content.galleries || [];
   const currentGallery = galleries[activeGallery] || galleries[0];
   const currentGalleryImages = currentGallery?.images || [];
@@ -188,14 +189,21 @@ export default function SectionThree({ content }) {
               </>
             ) : null}
 
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="flex h-[520px] gap-4 overflow-hidden max-lg:grid max-lg:h-auto max-lg:grid-cols-2 max-sm:grid-cols-1">
               {visibleTestimonials.map((item, index) => (
                 <article
-                  className="overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-sm shadow-blue-950/5"
+                  className={`group relative min-w-0 overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-sm shadow-blue-950/5 transition-all duration-500 ease-out max-lg:h-[420px] ${
+                    hoveredTestimonial === index
+                      ? "flex-[2.15]"
+                      : "flex-[.9]"
+                  }`}
                   key={`${item.name}-${activeTestimonialPage}-${index}`}
+                  onMouseEnter={() => setHoveredTestimonial(index)}
+                  onFocus={() => setHoveredTestimonial(index)}
+                  tabIndex={0}
                 >
                   <img
-                    className="h-48 w-full object-cover object-center"
+                    className="absolute inset-0 h-full w-full object-cover object-center transition duration-500 group-hover:scale-105"
                     src={
                       item.image ||
                       testimonialImages[
@@ -205,21 +213,26 @@ export default function SectionThree({ content }) {
                     }
                     alt={item.name}
                   />
-                  <div className="p-5">
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <h3 className="font-black text-slate-950">
-                          {item.name}
-                        </h3>
-                        <p className="mt-1 text-sm font-semibold text-slate-500">
-                          {item.role}
-                        </p>
-                      </div>
-                      <span className="shrink-0 rounded-full bg-blue-50 px-3 py-1 text-xs font-black text-[#0b3f9c]">
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/25 to-transparent opacity-90" />
+                  <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="rounded-full bg-white/95 px-3 py-1 text-xs font-black text-[#0b3f9c]">
                         {item.result}
                       </span>
+                      <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-bold text-white backdrop-blur">
+                        {item.role}
+                      </span>
                     </div>
-                    <p className="mt-5 line-clamp-4 text-sm leading-7 text-slate-600">
+                    <h3 className="mt-3 text-xl font-black leading-tight drop-shadow-sm">
+                      {item.name}
+                    </h3>
+                    <p
+                      className={`mt-3 text-sm font-semibold leading-6 text-blue-50 transition-all duration-500 ${
+                        hoveredTestimonial === index
+                          ? "line-clamp-4 opacity-100"
+                          : "line-clamp-2 opacity-90"
+                      }`}
+                    >
                       "{item.quote}"
                     </p>
                   </div>

@@ -5,7 +5,7 @@ export default function SectionOne({ content }) {
   const slides = useMemo(
     () => [
       {
-        image: "/assets/banner.jpg",
+        image: content.hero.campaign || "/assets/banner.jpg",
         badge: isVi ? "Hành trình 9 năm" : "9-year journey",
         title: isVi
           ? "Đồng hành cùng hàng triệu học viên luyện thi Tiếng Anh"
@@ -32,7 +32,13 @@ export default function SectionOne({ content }) {
           : "Choose a 450+, 550+, 650+, or 750+ roadmap based on your timeline and current level.",
       },
     ],
-    [content.hero.description, content.hero.image, content.hero.title, isVi],
+    [
+      content.hero.campaign,
+      content.hero.description,
+      content.hero.image,
+      content.hero.title,
+      isVi,
+    ],
   );
   const [active, setActive] = useState(0);
 

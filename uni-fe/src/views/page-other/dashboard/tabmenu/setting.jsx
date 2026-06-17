@@ -4,9 +4,9 @@ import {
   FileText,
   Home,
   Languages,
+  LogOut,
   Settings,
 } from "lucide-react";
-import { CiLogout } from "react-icons/ci";
 
 const menuItems = [
   { id: "overview", label: "Dashboard", icon: BookOpen },
@@ -14,7 +14,7 @@ const menuItems = [
   { id: "en", label: "Content EN", icon: Languages },
 ];
 
-export default function Setting({ activeLang, setActiveLang, goHome }) {
+export default function Setting({ activeLang, setActiveLang, goHome, onLogout }) {
   return (
     <aside className="fixed inset-y-0 left-0 hidden w-72 border-r border-slate-200 bg-white lg:block">
       <div className="flex h-20 items-center gap-3 border-b border-slate-200 px-6">
@@ -45,8 +45,9 @@ export default function Setting({ activeLang, setActiveLang, goHome }) {
               key={item.id}
               type="button"
               onClick={() => {
-                if (item.id === "vi" || item.id === "en")
+                if (item.id === "vi" || item.id === "en") {
                   setActiveLang(item.id);
+                }
               }}
             >
               <Icon size={19} />
@@ -66,11 +67,11 @@ export default function Setting({ activeLang, setActiveLang, goHome }) {
           Xem trang chủ
         </button>
         <button
-          className="flex w-full items-center gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-left text-sm font-semibold text-red-700 transition hover:border-red-300 hover:bg-red-100"
+          className="flex w-full items-center gap-3 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-left text-sm font-semibold text-rose-700 transition hover:border-rose-300 hover:bg-rose-100"
           type="button"
-          // onClick={onLogout}
+          onClick={onLogout}
         >
-          <CiLogout size={18} />
+          <LogOut size={18} />
           Đăng xuất
         </button>
       </div>
