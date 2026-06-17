@@ -1,13 +1,117 @@
+import {
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronUp,
+  X,
+} from "lucide-react";
+import { useState } from "react";
+
 export default function SectionThree({ content }) {
+  const [activeGallery, setActiveGallery] = useState(0);
+  const [activeGalleryPage, setActiveGalleryPage] = useState(0);
+  const [activeLightboxImage, setActiveLightboxImage] = useState(null);
+  const [activeTestimonialPage, setActiveTestimonialPage] = useState(0);
+  const galleries = content.galleries || [];
+  const currentGallery = galleries[activeGallery] || galleries[0];
+  const currentGalleryImages = currentGallery?.images || [];
+  const totalGalleryPages = Math.ceil(currentGalleryImages.length / 4);
+  const visibleGalleryImages = currentGalleryImages.slice(
+    activeGalleryPage * 4,
+    activeGalleryPage * 4 + 4,
+  );
   const testimonialImages = [
-    'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=500&q=80',
-    'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=500&q=80',
-    'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=500&q=80',
-  ]
+    "/assets/images/result-sv-aim/sv-2.jpg",
+    "/assets/images/result-sv-aim/sv-3.jpg",
+    "/assets/images/result-sv-aim/sv-4.jpg",
+    "/assets/images/result-sv-aim/sv-5.jpg",
+    "/assets/images/result-sv-aim/sv-6.jpg",
+    "/assets/images/result-sv-aim/sv-7.jpg",
+  ];
+  const fallbackTestimonials = [
+    {
+      name: "Hoàng Phúc",
+      role: "Sinh viên năm 2",
+      quote: "Mình học lại từ nền tảng nên dễ theo, phần chữa bài rất kỹ.",
+      result: "TOEIC 585",
+      image: "/assets/images/result-sv-aim/sv-5.jpg",
+    },
+    {
+      name: "Bảo Trân",
+      role: "Sinh viên năm cuối",
+      quote:
+        "Lộ trình rõ, học tới đâu có bài kiểm tra tới đó nên mình biết mình tiến bộ thật.",
+      result: "TOEIC 650",
+      image: "/assets/images/result-sv-aim/sv-6.jpg",
+    },
+    {
+      name: "Anh Tú",
+      role: "Người đi làm",
+      quote:
+        "Lớp học gọn, bài tập vừa sức và giáo viên sửa lỗi cá nhân rất sát.",
+      result: "+180 điểm",
+      image: "/assets/images/result-sv-aim/sv-7.jpg",
+    },
+  ];
+  const testimonials = [
+    ...(content.testimonials || []),
+    ...fallbackTestimonials,
+  ];
+  const totalTestimonialPages = Math.ceil(testimonials.length / 4);
+  const visibleTestimonials = testimonials.slice(
+    activeTestimonialPage * 4,
+    activeTestimonialPage * 4 + 4,
+  );
+
+  function goPrevGalleryPage() {
+    if (totalGalleryPages <= 1) return;
+    setActiveGalleryPage(
+      (current) => (current - 1 + totalGalleryPages) % totalGalleryPages,
+    );
+  }
+
+  function goNextGalleryPage() {
+    if (totalGalleryPages <= 1) return;
+    setActiveGalleryPage((current) => (current + 1) % totalGalleryPages);
+  }
+
+  function goPrevLightboxImage() {
+    if (activeLightboxImage === null || !currentGalleryImages.length) return;
+    setActiveLightboxImage(
+      (current) =>
+        (current - 1 + currentGalleryImages.length) %
+        currentGalleryImages.length,
+    );
+  }
+
+  function goNextLightboxImage() {
+    if (activeLightboxImage === null || !currentGalleryImages.length) return;
+    setActiveLightboxImage(
+      (current) => (current + 1) % currentGalleryImages.length,
+    );
+  }
+
+  function goPrevTestimonial() {
+    if (totalTestimonialPages <= 1) return;
+    setActiveTestimonialPage(
+      (current) =>
+        (current - 1 + totalTestimonialPages) % totalTestimonialPages,
+    );
+  }
+
+  function goNextTestimonial() {
+    if (totalTestimonialPages <= 1) return;
+    setActiveTestimonialPage(
+      (current) => (current + 1) % totalTestimonialPages,
+    );
+  }
 
   return (
     <>
-      <section className="bg-white px-4 py-16 sm:px-6 lg:px-8 lg:py-24" id="programs">
+      <section
+        className="bg-white px-4 py-16 sm:px-6 lg:px-8 lg:py-24"
+        id="programs"
+      >
         <div className="mx-auto max-w-7xl">
           <div className="max-w-2xl">
             <span className="text-sm font-black uppercase tracking-wide text-[#0b3f9c]">
@@ -16,7 +120,9 @@ export default function SectionThree({ content }) {
             <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
               {content.programsTitle}
             </h2>
-            <p className="mt-4 leading-7 text-slate-600">{content.programsSubtitle}</p>
+            <p className="mt-4 leading-7 text-slate-600">
+              {content.programsSubtitle}
+            </p>
           </div>
 
           <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
@@ -34,8 +140,12 @@ export default function SectionThree({ content }) {
                   <span className="inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-black text-[#0b3f9c]">
                     {program.tag}
                   </span>
-                  <h3 className="mt-4 text-xl font-black text-slate-950">{program.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-slate-600">{program.description}</p>
+                  <h3 className="mt-4 text-xl font-black text-slate-950">
+                    {program.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-slate-600">
+                    {program.description}
+                  </p>
                 </div>
               </article>
             ))}
@@ -45,103 +155,274 @@ export default function SectionThree({ content }) {
 
       <section className="border-y border-blue-100 bg-blue-50/70 px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
         <div className="mx-auto max-w-7xl">
+          <div className="mx-auto flex max-w-4xl flex-col gap-5 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
+            <div>
+              <span className="text-sm font-black uppercase tracking-wide text-[#0b3f9c]">
+                {content.testimonialsEyebrow}
+              </span>
+              <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
+                {content.testimonialsTitle}
+              </h2>
+            </div>
+          </div>
+
+          <div className="relative mt-10">
+            {totalTestimonialPages > 1 ? (
+              <>
+                <button
+                  className="absolute left-0 top-1/2 z-10 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#0b3f9c] shadow-lg shadow-blue-950/10 ring-1 ring-blue-100 transition hover:bg-blue-50 max-sm:left-4 max-sm:translate-x-0"
+                  type="button"
+                  onClick={goPrevTestimonial}
+                  aria-label="Previous testimonial"
+                >
+                  <ChevronLeft className="h-5 w-5" strokeWidth={2.6} />
+                </button>
+                <button
+                  className="absolute right-0 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-white text-[#0b3f9c] shadow-lg shadow-blue-950/10 ring-1 ring-blue-100 transition hover:bg-blue-50 max-sm:right-4 max-sm:translate-x-0"
+                  type="button"
+                  onClick={goNextTestimonial}
+                  aria-label="Next testimonial"
+                >
+                  <ChevronRight className="h-5 w-5" strokeWidth={2.6} />
+                </button>
+              </>
+            ) : null}
+
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {visibleTestimonials.map((item, index) => (
+                <article
+                  className="overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-sm shadow-blue-950/5"
+                  key={`${item.name}-${activeTestimonialPage}-${index}`}
+                >
+                  <img
+                    className="h-48 w-full object-cover object-center"
+                    src={
+                      item.image ||
+                      testimonialImages[
+                        (activeTestimonialPage * 4 + index) %
+                          testimonialImages.length
+                      ]
+                    }
+                    alt={item.name}
+                  />
+                  <div className="p-5">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <h3 className="font-black text-slate-950">
+                          {item.name}
+                        </h3>
+                        <p className="mt-1 text-sm font-semibold text-slate-500">
+                          {item.role}
+                        </p>
+                      </div>
+                      <span className="shrink-0 rounded-full bg-blue-50 px-3 py-1 text-xs font-black text-[#0b3f9c]">
+                        {item.result}
+                      </span>
+                    </div>
+                    <p className="mt-5 line-clamp-4 text-sm leading-7 text-slate-600">
+                      "{item.quote}"
+                    </p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          {totalTestimonialPages > 1 ? (
+            <div className="mt-6 flex justify-center gap-2">
+              {Array.from({ length: totalTestimonialPages }).map((_, index) => (
+                <button
+                  className={`h-2.5 rounded-full transition-all ${
+                    index === activeTestimonialPage
+                      ? "w-8 bg-[#0b3f9c]"
+                      : "w-2.5 bg-blue-200"
+                  }`}
+                  type="button"
+                  onClick={() => setActiveTestimonialPage(index)}
+                  aria-label={`Open testimonial group ${index + 1}`}
+                  key={index}
+                />
+              ))}
+            </div>
+          ) : null}
+        </div>
+      </section>
+
+      <section className="bg-white px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+        <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-3xl text-center">
             <span className="text-sm font-black uppercase tracking-wide text-[#0b3f9c]">
-              {content.testimonialsEyebrow}
+              {content.galleryEyebrow}
             </span>
             <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
-              {content.testimonialsTitle}
+              {content.galleryTitle}
             </h2>
           </div>
 
-          <div className="mt-10 grid gap-5 md:grid-cols-3">
-            {(content.testimonials || []).map((item, index) => (
-              <article
-                className="overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-sm shadow-blue-950/5"
-                key={item.name}
-              >
-                <img
-                  className="h-48 w-full object-cover object-center"
-                  src={item.image || testimonialImages[index % testimonialImages.length]}
-                  alt={item.name}
-                />
-                <div className="p-6">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <h3 className="font-black text-slate-950">{item.name}</h3>
-                      <p className="mt-1 text-sm font-semibold text-slate-500">{item.role}</p>
-                    </div>
-                    <span className="shrink-0 rounded-full bg-blue-50 px-3 py-1 text-xs font-black text-[#0b3f9c]">
-                      {item.result}
-                    </span>
+          {currentGallery ? (
+            <article className="relative mt-10 overflow-hidden rounded-3xl border border-blue-100 bg-blue-50/60 p-4 shadow-sm shadow-blue-950/5">
+              <div className="mb-5 flex flex-col gap-4">
+                <div>
+                  <div>
+                    <h3 className="text-2xl font-black text-slate-950">
+                      {currentGallery.title}
+                    </h3>
+                    <p className="mt-2 max-w-xl text-sm leading-6 text-slate-600">
+                      {currentGallery.description}
+                    </p>
                   </div>
-                  <p className="mt-5 text-sm leading-7 text-slate-600">"{item.quote}"</p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="overflow-hidden bg-white px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid gap-8 lg:grid-cols-[0.75fr_1.25fr] lg:items-end">
-            <div>
-              <span className="text-sm font-black uppercase tracking-wide text-[#0b3f9c]">
-                {content.galleryEyebrow}
-              </span>
-              <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
-                {content.galleryTitle}
-              </h2>
-            </div>
-            <p className="max-w-2xl text-base leading-7 text-slate-600 lg:justify-self-end">
-              Những khoảnh khắc thật từ lớp học, kết quả học viên và các chương trình khai giảng được gom thành từng mảng ảnh lớn để dễ xem hơn.
-            </p>
-          </div>
-
-          <div className="mt-12 space-y-8">
-            {(content.galleries || []).map((group, groupIndex) => (
-              <article
-                className={`grid gap-5 rounded-[32px] border border-blue-100 bg-gradient-to-br from-blue-50/80 to-white p-4 shadow-sm shadow-blue-950/5 lg:grid-cols-[1.25fr_0.75fr] lg:p-5 ${
-                  groupIndex % 2 === 1 ? 'lg:grid-cols-[0.75fr_1.25fr]' : ''
-                }`}
-                key={group.title}
-              >
-                <div className={`${groupIndex % 2 === 1 ? 'lg:order-2' : ''}`}>
-                  <img
-                    className="h-[280px] w-full rounded-[24px] object-cover shadow-lg shadow-blue-950/10 sm:h-[360px] lg:h-[430px]"
-                    src={group.images[0]}
-                    alt={group.title}
-                  />
                 </div>
 
-                <div className="grid content-between gap-5">
-                  <div className="rounded-[24px] bg-white p-6 shadow-sm">
-                    <span className="text-xs font-black uppercase tracking-wide text-[#e11d2e]">
-                      Album {String(groupIndex + 1).padStart(2, '0')}
-                    </span>
-                    <h3 className="mt-3 text-2xl font-black text-slate-950">{group.title}</h3>
-                    <p className="mt-3 text-sm leading-7 text-slate-600">{group.description}</p>
-                  </div>
+                <div
+                  className="flex gap-2 overflow-x-auto rounded-2xl bg-white p-2"
+                  role="tablist"
+                >
+                  {galleries.map((group, index) => (
+                    <button
+                      className={`h-11 shrink-0 rounded-xl px-4 text-sm font-black transition ${
+                        index === activeGallery
+                          ? "bg-[#0b3f9c] text-white shadow-sm"
+                          : "bg-blue-50 text-slate-600 hover:bg-blue-100"
+                      }`}
+                      type="button"
+                      role="tab"
+                      aria-selected={index === activeGallery}
+                      key={group.title}
+                      onClick={() => {
+                        setActiveGallery(index);
+                        setActiveGalleryPage(0);
+                      }}
+                    >
+                      {group.title}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-                  <div className="grid grid-cols-3 gap-3">
-                    {group.images.slice(1, 4).map((image, index) => (
+              <div className="relative">
+                {totalGalleryPages > 1 ? (
+                  <>
+                    <button
+                      className="absolute left-0 top-1/2 z-10 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#0b3f9c] shadow-lg shadow-blue-950/10 ring-1 ring-blue-100 transition hover:bg-blue-50 max-sm:left-3 max-sm:translate-x-0"
+                      type="button"
+                      onClick={goPrevGalleryPage}
+                      aria-label="Previous images"
+                    >
+                      <ChevronLeft className="h-5 w-5" strokeWidth={2.6} />
+                    </button>
+                    <button
+                      className="absolute right-0 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-white text-[#0b3f9c] shadow-lg shadow-blue-950/10 ring-1 ring-blue-100 transition hover:bg-blue-50 max-sm:right-3 max-sm:translate-x-0"
+                      type="button"
+                      onClick={goNextGalleryPage}
+                      aria-label="Next images"
+                    >
+                      <ChevronRight className="h-5 w-5" strokeWidth={2.6} />
+                    </button>
+                  </>
+                ) : null}
+
+                <div className="grid gap-3 md:grid-cols-4">
+                  {visibleGalleryImages.map((image, index) => (
+                    <button
+                      className={`group overflow-hidden rounded-2xl bg-white text-left ${
+                        index === 0 ? "md:col-span-2" : ""
+                      }`}
+                      type="button"
+                      onClick={() =>
+                        setActiveLightboxImage(activeGalleryPage * 4 + index)
+                      }
+                      key={image}
+                      aria-label={`Open ${currentGallery.title} ${activeGalleryPage * 4 + index + 1}`}
+                    >
                       <img
-                        className={`h-28 w-full rounded-2xl object-cover shadow-sm sm:h-36 ${
-                          index === 1 ? 'translate-y-4' : ''
-                        }`}
+                        className="h-56 w-full object-cover transition duration-300 group-hover:scale-105 md:h-72"
                         src={image}
-                        alt={`${group.title} ${index + 2}`}
-                        key={image}
+                        alt={`${currentGallery.title} ${activeGalleryPage * 4 + index + 1}`}
                       />
-                    ))}
-                  </div>
+                    </button>
+                  ))}
                 </div>
-              </article>
-            ))}
-          </div>
+              </div>
+
+              {totalGalleryPages > 1 ? (
+                <div className="mt-5 flex justify-center gap-2">
+                  {Array.from({ length: totalGalleryPages }).map((_, index) => (
+                    <button
+                      className={`h-2.5 rounded-full transition-all ${
+                        index === activeGalleryPage
+                          ? "w-8 bg-[#0b3f9c]"
+                          : "w-2.5 bg-blue-200"
+                      }`}
+                      type="button"
+                      onClick={() => setActiveGalleryPage(index)}
+                      aria-label={`Open image group ${index + 1}`}
+                      key={index}
+                    />
+                  ))}
+                </div>
+              ) : null}
+            </article>
+          ) : null}
         </div>
       </section>
+
+      {activeLightboxImage !== null ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/85 p-4">
+          <button
+            className="absolute right-5 top-5 flex h-11 w-11 items-center justify-center rounded-full bg-white text-slate-950 shadow-lg transition hover:bg-blue-50"
+            type="button"
+            onClick={() => setActiveLightboxImage(null)}
+            aria-label="Close image"
+          >
+            <X className="h-5 w-5" strokeWidth={2.6} />
+          </button>
+
+          {currentGalleryImages.length > 1 ? (
+            <>
+              <button
+                className="absolute left-5 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#0b3f9c] shadow-lg transition hover:bg-blue-50"
+                type="button"
+                onClick={goPrevLightboxImage}
+                aria-label="Previous large image"
+              >
+                <ChevronLeft className="h-6 w-6" strokeWidth={2.6} />
+              </button>
+              <button
+                className="absolute right-5 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#0b3f9c] shadow-lg transition hover:bg-blue-50"
+                type="button"
+                onClick={goNextLightboxImage}
+                aria-label="Next large image"
+              >
+                <ChevronRight className="h-6 w-6" strokeWidth={2.6} />
+              </button>
+              <button
+                className="absolute left-1/2 top-5 flex h-12 w-12 -translate-x-1/2 items-center justify-center rounded-full bg-white text-[#0b3f9c] shadow-lg transition hover:bg-blue-50"
+                type="button"
+                onClick={goPrevLightboxImage}
+                aria-label="Previous large image from top"
+              >
+                <ChevronUp className="h-6 w-6" strokeWidth={2.6} />
+              </button>
+              <button
+                className="absolute bottom-5 left-1/2 flex h-12 w-12 -translate-x-1/2 items-center justify-center rounded-full bg-white text-[#0b3f9c] shadow-lg transition hover:bg-blue-50"
+                type="button"
+                onClick={goNextLightboxImage}
+                aria-label="Next large image from bottom"
+              >
+                <ChevronDown className="h-6 w-6" strokeWidth={2.6} />
+              </button>
+            </>
+          ) : null}
+
+          <div className="max-h-[88vh] max-w-6xl overflow-hidden rounded-3xl bg-white p-2 shadow-2xl">
+            <img
+              className="max-h-[84vh] w-full rounded-2xl object-contain"
+              src={currentGalleryImages[activeLightboxImage]}
+              alt={`${currentGallery.title} ${activeLightboxImage + 1}`}
+            />
+          </div>
+        </div>
+      ) : null}
 
       <section className="bg-[#071b45] px-4 py-16 text-white sm:px-6 lg:px-8 lg:py-24">
         <div className="mx-auto max-w-7xl">
@@ -155,7 +436,10 @@ export default function SectionThree({ content }) {
               </h2>
               <div className="mt-6 grid gap-3">
                 {content.highlights.map((item) => (
-                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm font-semibold text-slate-100" key={item}>
+                  <div
+                    className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm font-semibold text-slate-100"
+                    key={item}
+                  >
                     {item}
                   </div>
                 ))}
@@ -164,7 +448,10 @@ export default function SectionThree({ content }) {
 
             <div className="grid gap-5 sm:grid-cols-2">
               {content.teachers.map((teacher) => (
-                <article className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-sm" key={teacher.name}>
+                <article
+                  className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-sm"
+                  key={teacher.name}
+                >
                   <div className="flex gap-4">
                     <img
                       className="h-24 w-24 shrink-0 rounded-xl object-cover object-top"
@@ -172,9 +459,13 @@ export default function SectionThree({ content }) {
                       alt={teacher.name}
                     />
                     <div>
-                      <p className="text-sm font-semibold text-blue-200">{teacher.role}</p>
+                      <p className="text-sm font-semibold text-blue-200">
+                        {teacher.role}
+                      </p>
                       <h3 className="mt-1 font-black">{teacher.name}</h3>
-                      <p className="mt-1 text-sm leading-6 text-slate-300">{teacher.school}</p>
+                      <p className="mt-1 text-sm leading-6 text-slate-300">
+                        {teacher.school}
+                      </p>
                       <span className="mt-3 inline-flex rounded-full bg-white px-3 py-1 text-xs font-black text-[#0b3f9c]">
                         {teacher.score}
                       </span>
@@ -187,5 +478,5 @@ export default function SectionThree({ content }) {
         </div>
       </section>
     </>
-  )
+  );
 }
